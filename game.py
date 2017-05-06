@@ -63,7 +63,8 @@ class Game:
         num_pile -= 1
 
         if self.piles_sizes[num_pile] < cnt_stones:
-            raise GameException("Invalid number of stones: {}".format(cnt_stones))
+            raise GameException("\
+            Invalid number of stones: {}".format(cnt_stones))
 
         self.piles_sizes[num_pile] -= cnt_stones
         if self.piles_sizes[num_pile] == 0:
@@ -122,7 +123,8 @@ class Game:
         :return: piles after AI turn
         """
         if self.whose_turn != Turn.AI:
-            raise GameException("AI can't perform turn, it's player's turn now")
+            raise GameException("\
+            AI can't perform turn, it's player's turn now")
 
         optimal_pile, optimal_stones_num = self.optimal_turn()
         self.reduce_pile(optimal_pile, optimal_stones_num)
@@ -135,4 +137,5 @@ class Game:
         return self.state == GameState.Finished
 
     def remove_empty_piles(self):
-        self.piles_sizes = list(filter(lambda size: size != 0, self.piles_sizes))
+        self.piles_sizes = list(filter(lambda size: size != 0,
+                                       self.piles_sizes))

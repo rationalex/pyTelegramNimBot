@@ -18,7 +18,8 @@ telebot.logger.setLevel(logging.DEBUG)
 # ======================== Auxiliary ========================
 def request_turn_from_player(chat_id, sizes):
     bot.send_message(chat_id,
-                     "Current sizes: \n{}\nIt's your turn now!".format(' '.join(map(str, sizes))))
+                     "Current sizes: \n{}\nIt's your turn now!".format(
+                         ' '.join(map(str, sizes))))
 
 
 # =======================  Bot logic ========================
@@ -92,7 +93,8 @@ def handle_player_turn(message: telebot.types.Message):
 
     pile_num, num_to_reduce = map(int, data)
     try:
-        new_piles = games[message.chat.id].accept_turn_from_player(pile_num, num_to_reduce)
+        new_piles = games[message.chat.id].accept_turn_from_player(
+                                            pile_num, num_to_reduce)
         if not new_piles:
             games[message.chat.id].finish()
             bot.send_message(message.chat.id, config.victory_text)
