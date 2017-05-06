@@ -18,11 +18,11 @@ telebot.logger.setLevel(logging.DEBUG)
 # ======================== Auxiliary ========================
 def request_turn_from_player(chat_id, sizes):
     bot.send_message(chat_id,
-                     "Current sizes: {}. It's your turn now!".format(' '.join(map(str, sizes))))
+                     "Current sizes: \n{}\nIt's your turn now!".format(' '.join(map(str, sizes))))
 
 
 # =======================  Bot logic ========================
-@bot.message_handler(commands=['help'])
+@bot.message_handler(commands=['start', 'help'])
 def handle_help(message):
     bot.send_message(message.chat.id, config.help_text)
 
@@ -37,7 +37,6 @@ def handle_start(message: telebot.types.Message):
 
     # otherwise new game should be started
     data = message.text.split()
-    print(data)
     turn = data[-1]
     if turn not in ['me', 'you']:
         bot.send_message(message.chat.id, config.incorrect_game_arguments)
@@ -49,18 +48,24 @@ def handle_start(message: telebot.types.Message):
             return
 
     sizes = list(map(int, data[1:-1]))
+    if not sizes:
+        bot.send_message(message.chat.id, config.incorrect_game_arguments)
+        return
+
     cur_game = game.Game(piles_sizes=sizes,
                          player_id=message.chat.id,
                          whose_turn=(lambda s: game.Turn.Player
                                      if s == 'me' else game.Turn.AI)(turn))
 
     games[message.chat.id] = cur_game
+    logging.debug("Game with {} started!".format(message.chat.id))
     bot.send_message(message.chat.id, config.game_started_text)
     if turn == 'you':
         sizes = cur_game.perform_ai_turn()
         if not sizes:
             games[message.chat.id].finish()
             bot.send_message(message.chat.id, config.defeat_text)
+            logging.debug("Game with {} finished!".format(message.chat.id))
             return
 
     request_turn_from_player(message.chat.id, sizes)
@@ -81,9 +86,17 @@ def handle_player_turn(message: telebot.types.Message):
         bot.send_message(message.chat.id, config.incorrect_turn_description)
         return
 
+    if not data[0].isdigit() or not data[1].isdigit():
+        bot.send_message(message.chat.id, config.incorrect_turn_description)
+        return
+
     pile_num, num_to_reduce = map(int, data)
     try:
-        games[message.chat.id].accept_turn_from_player(pile_num, num_to_reduce)
+        new_piles = games[message.chat.id].accept_turn_from_player(pile_num, num_to_reduce)
+        if not new_piles:
+            games[message.chat.id].finish()
+            bot.send_message(message.chat.id, config.victory_text)
+            return
     except game.GameException as exception:
         bot.send_message(message.chat.id, exception.message)
         return
