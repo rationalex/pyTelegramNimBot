@@ -9,9 +9,8 @@ new_game_arguments_regexp = """\
 
 # ===================== Messages =============================
 help_text = """Available commands:
-/start_game 11 2 57 179 me|you <- example input for new game request.
-            Me if you want to go first, you otherwise.
-//reduce <pile_num> <number_of_stones>
+/start_game 11 2 57 179 me|you <- example input for new game request. "me" if you want to go first, "you" otherwise.
+/reduce <pile_num> <number_of_stones>
 /end_game - terminate current game
 /help - get some helpful info
 """
