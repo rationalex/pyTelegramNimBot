@@ -6,7 +6,7 @@ import config
 
 def set_hook():
     url = "https://api.telegram.org/bot{token}/{method}".format(
-        token=config.auth_token,
+        token=config.AUTH_TOKEN,
         method="setWebhook"
     )
     data = {
@@ -19,7 +19,7 @@ def set_hook():
 
 def remove_hook():
     url = "https://api.telegram.org/bot{token}/{method}".format(
-        token=config.auth_token,
+        token=config.AUTH_TOKEN,
         method="deleteWebhook"
     )
 

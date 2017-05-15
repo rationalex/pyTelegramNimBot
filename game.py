@@ -10,14 +10,14 @@ class GameException(Exception):
 
 
 class Turn(enum.Enum):
-    Player = 1
+    PLAYER = 1
     AI = 2
 
 
 class GameState(enum.Enum):
-    NotStarted = 0
-    InProcess = 1
-    Finished = 2
+    NOT_STARTED = 0
+    IN_PROCESS = 1
+    FINISHED = 2
 
 
 class Game:
@@ -37,19 +37,19 @@ class Game:
         -- whose_turn              -- Turn.Player || Turn.AI
     """
 
-    default_piles_sizes = [10, 11, 179]
+    DEFAULT_PILES_SIZES = [10, 11, 179]
 
     def __init__(self,
                  player_id,
-                 piles_sizes=default_piles_sizes,
-                 whose_turn=Turn.Player):
+                 piles_sizes=DEFAULT_PILES_SIZES,
+                 whose_turn=Turn.PLAYER):
         self.player_id = player_id
         self.piles_sizes = piles_sizes
         self.whose_turn = whose_turn
-        self.state = GameState.InProcess
+        self.state = GameState.IN_PROCESS
 
     def finish(self):
-        self.state = GameState.Finished
+        self.state = GameState.FINISHED
 
     def reduce_pile(self,
                     num_pile,
@@ -107,8 +107,8 @@ class Game:
         :param num_deleted:
         :return: game state after turn completion
         """
-        if self.whose_turn != Turn.Player:
-            raise GameException(config.not_players_turn)
+        if self.whose_turn != Turn.PLAYER:
+            raise GameException(config.NOT_PLAYERS_TURN_ERR)
 
         self.reduce_pile(pile_num, num_deleted)
         self.remove_empty_piles()
@@ -130,11 +130,11 @@ class Game:
         self.reduce_pile(optimal_pile, optimal_stones_num)
         self.remove_empty_piles()
 
-        self.whose_turn = Turn.Player
+        self.whose_turn = Turn.PLAYER
         return self.piles_sizes
 
     def is_finished(self):
-        return self.state == GameState.Finished
+        return self.state == GameState.FINISHED
 
     def remove_empty_piles(self):
         self.piles_sizes = list(filter(lambda size: size != 0,
