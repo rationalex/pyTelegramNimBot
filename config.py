@@ -1,5 +1,5 @@
 # ===================== Tech info ============================
-AUTH_TOKEN = "347011927:AAFmXo0oJUmtL82-Q4J6PMjFIYaP4e4-xFI"
+AUTH_TOKEN = "ne hackayte plz"
 MY_TELEGRAM_ID = "11298983"
 
 # ===================== Service  =============================
